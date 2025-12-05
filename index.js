@@ -3,30 +3,29 @@ const express = require("express");
 
 const app = express();
 
-// Web UI root message
+// Railway health check HTTP server
 app.get("/", (req, res) => {
-  res.send("RTMP Server Running on Render ✓");
+  res.send("RTMP Server Running on Railway ✓");
 });
 
-// Express must bind to Render PORT for health checks
+// Bind express on Railway's dynamic port
 app.listen(process.env.PORT || 3000, () => {
-  console.log("HTTP Health Check server active");
+  console.log("Health check server started");
 });
 
 // RTMP + HLS configuration
 const config = {
   rtmp: {
-    port: 1935,
+    port: process.env.RTMP_PORT || 1935,
     chunk_size: 60000,
     gop_cache: true,
     ping: 30,
     ping_timeout: 60
   },
   http: {
-    port: 8000,
+    port: process.env.HLS_PORT || 8000,
     mediaroot: "./media",
-    allow_origin: "*",
-    api: true
+    allow_origin: "*"
   },
   trans: {
     ffmpeg: "/usr/bin/ffmpeg",
